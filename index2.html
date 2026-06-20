@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rota Kids Floripa</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:'Segoe UI',sans-serif;
+background:#f7f5ff;
+color:#333;
+}
+
+header{
+background:linear-gradient(135deg,#7b61ff,#ff9f68);
+color:white;
+padding:40px 20px;
+text-align:center;
+}
+
+.hero{
+padding:30px;
+text-align:center;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:20px;
+}
+
+.filters,
+.form{
+background:white;
+padding:25px;
+border-radius:24px;
+box-shadow:0 3px 12px rgba(0,0,0,.08);
+margin-bottom:25px;
+}
+
+.filters{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:15px;
+}
+
+input,
+select{
+width:100%;
+padding:14px;
+border:2px solid #e6dfff;
+border-radius:14px;
+font-size:16px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:20px;
+}
+
+.card{
+background:white;
+border-radius:24px;
+overflow:hidden;
+box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+.card img{
+width:100%;
+height:220px;
+object-fit:cover;
+display:block;
+}
+
+.card-content{
+padding:20px;
+}
+
+.badge{
+display:inline-block;
+background:#eaf9ef;
+padding:8px 14px;
+border-radius:14px;
+margin-bottom:12px;
+font-weight:600;
+}
+
+.card h3{
+margin-bottom:12px;
+}
+
+.card p{
+margin-bottom:10px;
+}
+
+button{
+background:#7b61ff;
+color:white;
+border:none;
+padding:12px 20px;
+border-radius:14px;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+opacity:.9;
+}
+
+.modal{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.6);
+z-index:999;
+padding:20px;
+}
+
+.modal-content{
+background:white;
+max-width:800px;
+margin:auto;
+padding:25px;
+border-radius:24px;
+max-height:90vh;
+overflow:auto;
+position:relative;
+}
+
+.close{
+position:absolute;
+top:15px;
+right:20px;
+font-size:32px;
+cursor:pointer;
+}
+
+.modal img{
+width:100%;
+max-height:400px;
+object-fit:cover;
+border-radius:15px;
+margin-bottom:15px;
+}
+
+ul{
+padding-left:20px;
+margin-top:10px;
+}
+
+li{
+margin-bottom:8px;
+}
+
+.form h2{
+margin-bottom:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>🎠 Rota Kids Floripa</h1>
+<p>Guia colaborativo para famílias da Grande Florianópolis</p>
+</header>
+
+<div class="hero">
+<h2>Descubra os melhores lugares para brincar</h2>
+<p>Avaliações reais sobre segurança, limpeza e qualidade dos espaços infantis.</p>
+</div>
+
+<div class="container">
+
+<div class="filters">
+
+<input id="busca" placeholder="Buscar local...">
+
+<select id="cidade">
+<option value="">Todas as cidades</option>
+<option>Santo Amaro da Imperatriz</option>
+<option>Palhoça</option>
+<option>São José</option>
+<option>Florianópolis</option>
+</select>
+
+<select id="idade">
+<option value="">Todas as idades</option>
+<option>0-2</option>
+<option>3-5</option>
+<option>6-8</option>
+<option>9-12</option>
+</select>
+
+</div>
+
+<div id="cards" class="cards"></div>
+
+<div class="form">
+
+<h2>📍 Cadastrar Novo Local</h2>
+
+<input id="novoNome" placeholder="Nome do local">
+<br><br>
+
+<input id="novoCidade" placeholder="Cidade">
+<br><br>
+
+<input id="novoIdade" placeholder="Faixa etária (ex: 3-5)">
+<br><br>
+
+<button onclick="addLocal()">
+Adicionar Local
+</button>
+
+</div>
+
+</div>
+
+<div class="modal" id="modal">
+
+<div class="modal-content">
+
+<span class="close" onclick="fechar()">&times;</span>
+
+<div id="detalhes"></div>
+
+</div>
+
+</div>
+
+<script>
+
+let locais=[
+
+{
+nome:"Praça Central de Santo Amaro",
+cidade:"Santo Amaro da Imperatriz",
+idade:"2-12",
+idadeMin:2,
+idadeMax:12,
+seg:5,
+lim:4,
+cons:5,
+foto:"foto1.jpg",
+coment:"Brinquedos novos e espaço cercado.",
+destaques:[
+"Brinquedos novos",
+"Área cercada",
+"Muitas árvores"
+]
+},
+
+{
+nome:"Parque de Coqueiros",
+cidade:"Florianópolis",
+idade:"0-12",
+idadeMin:0,
+idadeMax:12,
+seg:4,
+lim:5,
+cons:4,
+foto:"foto2.jpg",
+coment:"Ótimo para passeios em família.",
+destaques:[
+"Vista para o mar",
+"Área para caminhada",
+"Ambiente familiar"
+]
+},
+
+{
+nome:"Beira-Mar de São José",
+cidade:"São José",
+idade:"2-12",
+idadeMin:2,
+idadeMax:12,
+seg:4,
+lim:4,
+cons:4,
+foto:"foto3.jpg",
+coment:"Grande área para brincar.",
+destaques:[
+"Playground grande",
+"Vista para o mar",
+"Área para bicicletas"
+]
+},
+
+{
+nome:"Praça do Pagani",
+cidade:"Palhoça",
+idade:"3-5",
+idadeMin:3,
+idadeMax:5,
+seg:4,
+lim:4,
+cons:5,
+foto:"foto4.jpg",
+coment:"Boa estrutura para crianças pequenas.",
+destaques:[
+"Boa iluminação",
+"Fácil acesso",
+"Ideal para crianças pequenas"
+]
+}
+
+];
+
+function compativel(local,filtro){
+
+if(filtro==="") return true;
+
+const p=filtro.split("-");
+
+const min=parseInt(p[0]);
+const max=parseInt(p[1]);
+
+return local.idadeMin <= max &&
+local.idadeMax >= min;
+
+}
+
+function render(){
+
+const texto=busca.value.toLowerCase();
+const cidadeFiltro=cidade.value;
+const idadeFiltro=idade.value;
+
+const filtrados=locais.filter(l=>
+
+l.nome.toLowerCase().includes(texto) &&
+
+(cidadeFiltro==="" || l.cidade===cidadeFiltro) &&
+
+compativel(l,idadeFiltro)
+
+);
+
+cards.innerHTML=filtrados.map(l=>`
+
+<div class="card">
+
+<img
+src="${l.foto}"
+onerror="this.src='https://placehold.co/800x500?text=Rota+Kids'"
+>
+
+<div class="card-content">
+
+<div class="badge">
+👶 ${l.idade} anos
+</div>
+
+<h3>${l.nome}</h3>
+
+<p>📍 ${l.cidade}</p>
+
+<p>🛡️ Segurança: ${l.seg}/5</p>
+
+<p>🧹 Limpeza: ${l.lim}/5</p>
+
+<button onclick="detalhe('${l.nome}')">
+Ver detalhes
+</button>
+
+</div>
+
+</div>
+
+`).join("");
+
+}
+
+function detalhe(nome){
+
+const l=locais.find(x=>x.nome===nome);
+
+detalhes.innerHTML=`
+
+<h2>${l.nome}</h2>
+
+<br>
+
+<img
+src="${l.foto}"
+onerror="this.src='https://placehold.co/800x500?text=Rota+Kids'"
+>
+
+<p><strong>📍 Cidade:</strong> ${l.cidade}</p>
+
+<p><strong>👶 Faixa etária:</strong> ${l.idade}</p>
+
+<p><strong>🛡️ Segurança:</strong> ${l.seg}/5</p>
+
+<p><strong>🧹 Limpeza:</strong> ${l.lim}/5</p>
+
+<p><strong>⭐ Conservação:</strong> ${l.cons}/5</p>
+
+<h3>Destaques</h3>
+
+<ul>
+${l.destaques.map(d=>`<li>${d}</li>`).join("")}
+</ul>
+
+<br>
+
+<p>${l.coment}</p>
+
+`;
+
+modal.style.display="flex";
+
+}
+
+function fechar(){
+modal.style.display="none";
+}
+
+window.onclick=function(e){
+
+if(e.target===modal){
+fechar();
+}
+
+}
+
+function addLocal(){
+
+if(!novoNome.value.trim()) return;
+
+let idadeMin=0;
+let idadeMax=12;
+
+if(novoIdade.value.includes("-")){
+
+const p=novoIdade.value.split("-");
+
+idadeMin=parseInt(p[0]);
+idadeMax=parseInt(p[1]);
+
+}
+
+locais.push({
+
+nome:novoNome.value,
+cidade:novoCidade.value,
+idade:novoIdade.value,
+idadeMin,
+idadeMax,
+seg:5,
+lim:5,
+cons:5,
+foto:"",
+coment:"Local cadastrado pela comunidade.",
+destaques:["Novo local enviado"]
+
+});
+
+novoNome.value="";
+novoCidade.value="";
+novoIdade.value="";
+
+render();
+
+}
+
+busca.oninput=render;
+cidade.onchange=render;
+idade.onchange=render;
+
+render();
+
+</script>
+
+</body>
+</html>
