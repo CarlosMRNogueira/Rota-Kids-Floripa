@@ -201,6 +201,16 @@ l.nome.toLowerCase().includes(b) &&
 compativel(l,i)
 ).map((l,idx)=>`
 <div class="card">
+
+<img src="${l.foto}"
+style="
+width:100%;
+height:180px;
+object-fit:cover;
+border-radius:15px;
+margin-bottom:10px;
+">
+
 <div class="badge">👶 ${l.idade} anos</div>
 <h3>${l.nome}</h3>
 <p>📍 ${l.cidade}</p>
@@ -213,55 +223,81 @@ compativel(l,i)
 
 function detalhe(idx){
 
-let l=locais[idx];
+let locais=[
 
-detalhes.innerHTML=`
+{
+nome:"Praça Central de Santo Amaro",
+cidade:"Santo Amaro da Imperatriz",
+idadeMin:2,
+idadeMax:12,
+idade:"2-12",
+seg:5,
+lim:4,
+cons:5,
+foto:"foto1.jpeg",
+destaques:[
+"Brinquedos novos",
+"Área cercada",
+"Muitas árvores"
+],
+coment:"Brinquedos novos e espaço cercado."
+},
 
-<h2>${l.nome}</h2>
+{
+nome:"Parque de Coqueiros",
+cidade:"Florianópolis",
+idadeMin:0,
+idadeMax:12,
+idade:"0-12",
+seg:4,
+lim:5,
+cons:4,
+foto:"foto2.jpeg",
+destaques:[
+"Vista para o mar",
+"Área para caminhada",
+"Ambiente familiar"
+],
+coment:"Ótimo para passeios em família."
+},
 
-<img src="${l.foto}"
-style="
-width:100%;
-height:280px;
-object-fit:cover;
-border-radius:15px;
-margin-bottom:15px;
-">
+{
+nome:"Beira-Mar de São José",
+cidade:"São José",
+idadeMin:2,
+idadeMax:12,
+idade:"2-12",
+seg:4,
+lim:4,
+cons:4,
+foto:"foto3.jpeg",
+destaques:[
+"Vista para o mar",
+"Playground grande",
+"Área para bicicletas"
+],
+coment:"Grande área para brincar."
+},
 
-<p>📍 ${l.cidade}</p>
+{
+nome:"Praça do Pagani",
+cidade:"Palhoça",
+idadeMin:3,
+idadeMax:5,
+idade:"3-5",
+seg:4,
+lim:4,
+cons:5,
+foto:"foto4.jpeg",
+destaques:[
+"Ideal para crianças pequenas",
+"Boa iluminação",
+"Fácil acesso"
+],
+coment:"Boa estrutura para crianças pequenas."
+}
 
-<p>👶 Faixa etária: ${l.idade}</p>
-
-<p>🛡️ Segurança: ${l.seg}/5</p>
-
-<p>🧹 Limpeza: ${l.lim}/5</p>
-
-<p>🛝 Conservação: ${l.cons}/5</p>
-
-<div style="
-background:#fff6d8;
-padding:15px;
-border-radius:12px;
-margin:15px 0;
-">
-
-<h3>💡 O que tem de legal aqui?</h3>
-
-<ul>
-${l.destaques.map(item=>`<li>${item}</li>`).join("")}
-</ul>
-
-</div>
-
-<p><b>Comentário:</b> ${l.coment}</p>
-
-<h3>Enviar avaliação</h3>
-
-<input placeholder="Escreva seu comentário">
-
-<button>Enviar</button>
-
-`;
+];
 
 modal.style.display="block";
 
